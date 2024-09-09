@@ -39,12 +39,5 @@ android {
 }
 
 dependencies {
-    // AndroidX
-    implementation(libs.appcompat)
-    implementation(libs.core.ktx)
-    implementation(libs.constraintlayout)
-
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    implementation(project(":ui"))
 }
