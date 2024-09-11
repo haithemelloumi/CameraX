@@ -41,13 +41,6 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
-    // Json
-    implementation(libs.moshi)
-    implementation(libs.moshi.adapters)
-    implementation(libs.moshi.kotlin)
-    ksp(libs.moshi.kotlin.codegen)
-    implementation(libs.converter.moshi)
-
     // Testing
     implementation(libs.junit.ktx)
     testImplementation(libs.kotlinx.coroutines.test)

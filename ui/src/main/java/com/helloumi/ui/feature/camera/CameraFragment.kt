@@ -17,22 +17,28 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import com.helloumi.ui.R
+import com.helloumi.ui.feature.cities.CameraViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Camera Fragment.
  */
+@AndroidEntryPoint
 class CameraFragment : Fragment() {
 
     private var imageCapture: ImageCapture? = null
 
     private lateinit var outputDirectory: File
     private lateinit var cameraExecutor: ExecutorService
+
+    private val viewModel: CameraViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,6 +50,9 @@ class CameraFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // TODO AND Display some data
+        viewModel.productsUi
 
         // Request camera permissions
         if (allPermissionsGranted()) {
@@ -177,7 +186,7 @@ class CameraFragment : Fragment() {
     }
 
     companion object {
-        private const val TAG = "CameraXBasic"
+        private const val TAG = "CameraX"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         private const val REQUEST_CODE_PERMISSIONS = 10
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)

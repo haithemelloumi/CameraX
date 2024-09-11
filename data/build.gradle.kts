@@ -19,14 +19,23 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "BASE_URL", "\"https://dummyjson.com/\"")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "BASE_URL", "\"https://dummyjson.com/\"")
         }
     }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -37,17 +46,15 @@ android {
 }
 
 dependencies {
+    implementation(project(":domain"))
+
     // Dagger Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
     // Json
-    implementation(libs.moshi)
-    implementation(libs.moshi.adapters)
     implementation(libs.moshi.kotlin)
-    ksp(libs.moshi.kotlin.codegen)
     implementation(libs.converter.moshi)
-    api(libs.gson)
 
     // Testing
     implementation(libs.junit.ktx)

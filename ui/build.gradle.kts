@@ -1,6 +1,10 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
+    // dagger hilt
+    alias(libs.plugins.dagger.hilt.android)
+    // ksp
+    alias(libs.plugins.devtools.ksp)
 }
 
 android {
@@ -23,6 +27,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -37,6 +42,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":domain"))
+
     // AndroidX
     implementation(libs.appcompat)
     implementation(libs.core.ktx)
@@ -53,6 +60,10 @@ dependencies {
     implementation(libs.camera.video)
     implementation(libs.camera.view)
     implementation(libs.camera.extensions)
+
+    // Dagger Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
 
     // Testing
     implementation(libs.junit.ktx)

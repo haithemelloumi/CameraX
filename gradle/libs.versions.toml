@@ -11,7 +11,6 @@ hiltVersion = "2.51.1"
 
 moshiVersion = "1.15.0"
 retrofitVersion = "2.9.0"
-gsonVersion = "2.11.0"
 
 junitKtxVersion = "1.2.1"
 kotlinCoroutineTestVersion = "1.8.1"
@@ -47,12 +46,8 @@ camera-extensions = { module = "androidx.camera:camera-extensions", version.ref 
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltVersion" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltVersion" }
 
-moshi = { module = "com.squareup.moshi:moshi", version.ref = "moshiVersion" }
-moshi-adapters = { module = "com.squareup.moshi:moshi-adapters", version.ref = "moshiVersion" }
 moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshiVersion" }
-moshi-kotlin-codegen = { module = "com.squareup.moshi:moshi-kotlin-codegen", version.ref = "moshiVersion" }
 converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "retrofitVersion" }
-gson = { module = "com.google.code.gson:gson", version.ref = "gsonVersion" }
 
 junit-ktx = { module = "androidx.test.ext:junit-ktx", version.ref = "junitKtxVersion" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinCoroutineTestVersion" }
