@@ -1,4 +1,4 @@
-package com.helloumi.camerax
+package com.helloumi.ui
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.helloumi.camerax", appContext.packageName)
+        assertEquals("com.helloumi.ui.test", appContext.packageName)
     }
 }

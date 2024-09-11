@@ -1,4 +1,4 @@
-package com.helloumi.camerax
+package com.helloumi.ui
 
 import org.junit.Test
 
