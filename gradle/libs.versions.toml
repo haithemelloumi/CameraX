@@ -1,14 +1,32 @@
 [versions]
-agp = "8.5.2"
-kotlin = "1.9.22"
 appcompat = "1.7.0"
 coreKtx = "1.13.1"
 constraintlayout = "2.1.4"
+
 navigation = "2.8.0"
+
 camerax = "1.3.4"
-junit = "4.13.2"
-junitVersion = "1.2.1"
-espressoCore = "3.6.1"
+
+hiltVersion = "2.51.1"
+
+moshiVersion = "1.15.0"
+retrofitVersion = "2.9.0"
+
+junitKtxVersion = "1.2.1"
+kotlinCoroutineTestVersion = "1.8.1"
+mockitoInlineVersion = "5.2.0"
+mockitoVersion = "5.3.1"
+mockitoCoreVersion = "5.12.0"
+espressoVersion = "3.6.1"
+kotlinTestJunitVersion = "1.8.22"
+mockkVersion = "1.13.8"
+mockkAndroidVersion = "1.12.3"
+
+agp = "8.5.2"
+kotlin = "1.9.22"
+daggerHiltVersion = "2.51.1"
+devtoolsKspVersion = "1.9.22-1.0.17"
+jetbrainsKotlinJvm = "1.9.23"
 
 [libraries]
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
@@ -25,11 +43,27 @@ camera-video = { module = "androidx.camera:camera-video", version.ref = "camerax
 camera-view = { module = "androidx.camera:camera-view", version.ref = "camerax" }
 camera-extensions = { module = "androidx.camera:camera-extensions", version.ref = "camerax" }
 
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltVersion" }
+hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltVersion" }
+
+moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshiVersion" }
+converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "retrofitVersion" }
+
+junit-ktx = { module = "androidx.test.ext:junit-ktx", version.ref = "junitKtxVersion" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinCoroutineTestVersion" }
+mockito-inline = { module = "org.mockito:mockito-inline", version.ref = "mockitoInlineVersion" }
+mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoVersion" }
+mockito-android = { module = "org.mockito:mockito-android", version.ref = "mockitoVersion" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCoreVersion" }
+espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoVersion" }
+kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlinTestJunitVersion" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockkVersion" }
+mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockkAndroidVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "daggerHiltVersion" }
+devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "devtoolsKspVersion" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
