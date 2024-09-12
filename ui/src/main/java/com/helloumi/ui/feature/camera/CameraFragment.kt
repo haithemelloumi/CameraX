@@ -18,7 +18,8 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import com.helloumi.ui.R
@@ -36,7 +37,9 @@ class CameraFragment : Fragment() {
 
     private lateinit var cameraExecutor: ExecutorService
 
-    private val viewModel: CameraViewModel by viewModels()
+    private lateinit var previewImageview: ImageView
+
+    private val viewModel: CameraViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,9 +52,6 @@ class CameraFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // TODO AND Display some data
-        viewModel.productsUi
-
         // Request camera permissions
         if (allPermissionsGranted()) {
             startCamera()
@@ -62,6 +62,8 @@ class CameraFragment : Fragment() {
         }
 
         setTakePhotoButtonListener()
+        previewImageview = requireActivity().findViewById<ImageView>(R.id.camera_preview_imageview)
+        setPreviewImageviewListener()
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
@@ -99,7 +101,8 @@ class CameraFragment : Fragment() {
             // Used to bind the lifecycle of cameras to the lifecycle owner
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
-            val viewFinder = requireActivity().findViewById<PreviewView>(R.id.camera_preview_view)
+            val viewFinder =
+                requireActivity().findViewById<PreviewView>(R.id.camera_preview_view)
             // Preview
             val preview = Preview.Builder()
                 .build()
@@ -148,10 +151,15 @@ class CameraFragment : Fragment() {
         val msg = "Photo capture succeeded: $uri"
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
         Log.d(TAG, msg)
+        previewImageview.setImageURI(uri)
+        viewModel.updateUri(uri)
+    }
 
-        val imageview =
-            requireActivity().findViewById<ImageView>(R.id.camera_preview_imageview)
-        imageview.setImageURI(uri)
+
+    private fun setPreviewImageviewListener() {
+        previewImageview.setOnClickListener {
+            findNavController().navigate(R.id.action_cameraFragment_to_previewFragment)
+        }
     }
 
     companion object {

@@ -22,15 +22,17 @@ object CameraFileUtils {
         onImageCaptured: (Uri) -> Unit
     ) {
         // Get a stable reference of the modifiable image capture use case
-        val imageCapture = imageCapture ?: return
+        imageCapture ?: return
 
         val outputDirectory = createPhotoFile(context)
+
 
         // Create time-stamped output file to hold the image
         val photoFile = File(
             outputDirectory,
             SimpleDateFormat(
-                FILENAME_FORMAT, Locale.US
+                FILENAME_FORMAT,
+                Locale.US
             ).format(System.currentTimeMillis()) + PHOTO_EXTENSION
         )
 
