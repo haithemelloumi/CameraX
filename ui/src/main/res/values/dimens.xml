@@ -9,6 +9,7 @@
     <dimen name="five_unit">48dp</dimen>
 
     <dimen name="camera_take_picture_height">50dp</dimen>
+    <dimen name="camera_preview_height">100dp</dimen>
 
     <!-- Text size -->
     <dimen name="text_size_title">19sp</dimen>
