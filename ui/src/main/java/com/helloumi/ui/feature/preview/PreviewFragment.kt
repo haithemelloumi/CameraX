@@ -1,16 +1,30 @@
 package com.helloumi.ui.feature.preview
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Button
+import android.widget.Toast
+import android.content.ContentValues
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Build
+import android.os.Environment
+import android.provider.MediaStore
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.Fragment
+import androidx.core.view.drawToBitmap
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
 import com.helloumi.data.model.result.ProductsResult
 import com.helloumi.ui.R
 import com.helloumi.ui.feature.cities.CameraViewModel
+import com.helloumi.ui.feature.camera.CameraFragment.Companion.PHOTO_EXTENSION
 
 /**
  * Preview Fragment
@@ -34,6 +48,7 @@ class PreviewFragment : Fragment() {
 
         setPreviewImage()
         setProductData()
+        setDownloadButtonListener()
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -61,6 +76,39 @@ class PreviewFragment : Fragment() {
                 setText(R.id.preview_price_text, noData)
                 setText(R.id.preview_description_text, noData)
             }
+        }
+    }
+
+    private fun setDownloadButtonListener() {
+        requireActivity().findViewById<Button>(R.id.preview_download_button).setOnClickListener {
+            val bitmap: Bitmap = previewImage.drawToBitmap()
+            saveImageToStorage(bitmap)
+        }
+    }
+
+    private fun saveImageToStorage(bitmap: Bitmap?) {
+        val filename = "${System.currentTimeMillis()}$PHOTO_EXTENSION"
+        var fos: OutputStream? = null
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            requireContext().contentResolver?.also { resolver ->
+                val contentValues = ContentValues().apply {
+                    put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
+                    put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg")
+                    put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+                }
+                val imageUri: Uri? =
+                    resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+                fos = imageUri?.let { resolver.openOutputStream(it) }
+            }
+        } else {
+            val imagesDir =
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+            val image = File(imagesDir, filename)
+            fos = FileOutputStream(image)
+        }
+        fos?.use {
+            bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, it)
+            Toast.makeText(requireContext(), "Saved to Gallery", Toast.LENGTH_SHORT).show()
         }
     }
 
