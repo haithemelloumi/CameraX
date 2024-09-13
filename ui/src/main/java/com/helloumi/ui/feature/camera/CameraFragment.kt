@@ -155,7 +155,6 @@ class CameraFragment : Fragment() {
         viewModel.updateUri(uri)
     }
 
-
     private fun setPreviewImageviewListener() {
         previewImageview.setOnClickListener {
             findNavController().navigate(R.id.action_cameraFragment_to_previewFragment)
