@@ -3,17 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
+        android:name="com.helloumi.todayweatherforecast.CameraxApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:targetApi="31">
+        tools:targetApi="tiramisu">
         <activity
-            android:name=".MainActivity"
+            android:name="com.helloumi.ui.feature.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
