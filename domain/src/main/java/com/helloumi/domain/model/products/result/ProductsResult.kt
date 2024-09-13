@@ -3,14 +3,9 @@ package com.helloumi.data.model.result
 import com.helloumi.domain.model.response.ProductsResponse
 
 /**
- * Current Details result, from web service requests.
+ * Current Products result, from web service requests.
  */
 sealed class ProductsResult {
-
-    /**
-     * Loading result.
-     */
-    object Loading : ProductsResult()
 
     /**
      * Success result.

@@ -12,19 +12,19 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.util.Log
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.viewModels
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util.*
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import com.helloumi.ui.R
 import com.helloumi.ui.feature.cities.CameraViewModel
+import com.helloumi.ui.utils.camera.CameraFileUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -35,10 +35,11 @@ class CameraFragment : Fragment() {
 
     private var imageCapture: ImageCapture? = null
 
-    private lateinit var outputDirectory: File
     private lateinit var cameraExecutor: ExecutorService
 
-    private val viewModel: CameraViewModel by viewModels()
+    private lateinit var previewImageview: ImageView
+
+    private val viewModel: CameraViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,9 +52,6 @@ class CameraFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // TODO AND Display some data
-        viewModel.productsUi
-
         // Request camera permissions
         if (allPermissionsGranted()) {
             startCamera()
@@ -63,12 +61,9 @@ class CameraFragment : Fragment() {
             )
         }
 
-        // Set up the listener for take photo button
-        requireActivity().findViewById<Button>(R.id.camera_take_photo_button)
-            .setOnClickListener { takePhoto() }
-
-        outputDirectory = getOutputDirectory()
-
+        setTakePhotoButtonListener()
+        previewImageview = requireActivity().findViewById<ImageView>(R.id.camera_preview_imageview)
+        setPreviewImageviewListener()
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
@@ -99,40 +94,6 @@ class CameraFragment : Fragment() {
     // Internal
     ///////////////////////////////////////////////////////////////////////////
 
-    private fun takePhoto() {
-        // Get a stable reference of the modifiable image capture use case
-        val imageCapture = imageCapture ?: return
-
-        // Create time-stamped output file to hold the image
-        val photoFile = File(
-            outputDirectory,
-            SimpleDateFormat(
-                FILENAME_FORMAT, Locale.US
-            ).format(System.currentTimeMillis()) + ".jpg"
-        )
-
-        // Create output options object which contains file + metadata
-        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
-
-        // Set up image capture listener, which is triggered after photo has
-        // been taken
-        imageCapture.takePicture(
-            outputOptions,
-            ContextCompat.getMainExecutor(requireContext()),
-            object : ImageCapture.OnImageSavedCallback {
-                override fun onError(exc: ImageCaptureException) {
-                    Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
-                }
-
-                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    val savedUri = Uri.fromFile(photoFile)
-                    val msg = "Photo capture succeeded: $savedUri"
-                    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
-                    Log.d(TAG, msg)
-                }
-            })
-    }
-
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
 
@@ -140,7 +101,8 @@ class CameraFragment : Fragment() {
             // Used to bind the lifecycle of cameras to the lifecycle owner
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
-            val viewFinder = requireActivity().findViewById<PreviewView>(R.id.camera_preview_view)
+            val viewFinder =
+                requireActivity().findViewById<PreviewView>(R.id.camera_preview_view)
             // Preview
             val preview = Preview.Builder()
                 .build()
@@ -148,8 +110,7 @@ class CameraFragment : Fragment() {
                     it.setSurfaceProvider(viewFinder.surfaceProvider)
                 }
 
-            imageCapture = ImageCapture.Builder()
-                .build()
+            imageCapture = ImageCapture.Builder().build()
 
             // Select back camera as a default
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
@@ -176,18 +137,35 @@ class CameraFragment : Fragment() {
         ) == PackageManager.PERMISSION_GRANTED
     }
 
-    @Suppress("DEPRECATION")
-    private fun getOutputDirectory(): File {
-        val mediaDir = requireContext().externalMediaDirs.firstOrNull()?.let {
-            File(it, resources.getString(R.string.take_photo)).apply { mkdirs() }
+    private fun setTakePhotoButtonListener() {
+        // Set up the listener for take photo button
+        requireActivity().findViewById<Button>(R.id.camera_take_photo_button)
+            .setOnClickListener {
+                CameraFileUtils.takePhoto(requireContext(), imageCapture) { uri ->
+                    onImageCaptured(uri)
+                }
+            }
+    }
+
+    private fun onImageCaptured(uri: Uri) {
+        val msg = "Photo capture succeeded: $uri"
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+        Log.d(TAG, msg)
+        previewImageview.setImageURI(uri)
+        viewModel.updateUri(uri)
+    }
+
+
+    private fun setPreviewImageviewListener() {
+        previewImageview.setOnClickListener {
+            findNavController().navigate(R.id.action_cameraFragment_to_previewFragment)
         }
-        return if (mediaDir != null && mediaDir.exists())
-            mediaDir else requireContext().filesDir
     }
 
     companion object {
-        private const val TAG = "CameraX"
-        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
+        const val TAG = "CameraX"
+        const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
+        const val PHOTO_EXTENSION = ".jpg"
         private const val REQUEST_CODE_PERMISSIONS = 10
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
     }

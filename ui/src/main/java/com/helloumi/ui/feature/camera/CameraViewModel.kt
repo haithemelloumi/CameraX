@@ -1,5 +1,6 @@
 package com.helloumi.ui.feature.cities
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,13 +26,16 @@ class CameraViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _productsUi: MutableStateFlow<ProductsResult> =
-        MutableStateFlow(ProductsResult.Loading)
+        MutableStateFlow(ProductsResult.ServerUnavailable)
     val productsUi: MutableStateFlow<ProductsResult> get() = _productsUi
 
     private val isOnline: Flow<Boolean> = networkMonitor.isOnline
 
     private val _isInternetAvailable: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isInternetAvailable: MutableStateFlow<Boolean> get() = _isInternetAvailable
+
+    private val _uri = MutableStateFlow(Uri.EMPTY)
+    val uri = _uri
 
     init {
         collectIsOnline()
@@ -60,13 +64,9 @@ class CameraViewModel @Inject constructor(
                 _productsUi.value = it
                 when (it) {
                     is ProductsResult.Success -> Log.i(
-                        TAG+SUCCESS,
+                        TAG + SUCCESS,
                         it.productsResponse.toString()
                     )
-
-                    is ProductsResult.Loading -> {
-                        Log.i(TAG, LOADING)
-                    }
 
                     is ProductsResult.ServerError -> {
                         Log.i(TAG, SERVER_ERROR)
@@ -81,10 +81,13 @@ class CameraViewModel @Inject constructor(
         }
     }
 
+    fun updateUri(uri: Uri) {
+        _uri.value = uri
+    }
+
     companion object {
         private const val TAG = "getProducts:"
         private const val SUCCESS = "Success"
-        private const val LOADING = "Loading"
         private const val SERVER_ERROR = "ServerError"
         private const val SERVER_UNAVAILABLE = "ServerUnavailable"
     }
